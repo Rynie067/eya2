@@ -1,28 +1,52 @@
-# Rynie Voice
+# eyo2
 
-Windows desktop microphone processor for Discord. The project is built from scratch in this repository.
+**eyo2**, Windows'ta mikrofon sesini gerçek zamanlı işlemek için geliştirilen uygulamadır. Görünen uygulama adı eyo2'dir; GitHub deposunun adresi şimdilik `Rynie067/eya2` olarak kalır.
 
-## Current target
+## Hedef özellikler
 
-- Windows 10 (1903+) and Windows 11, x64.
-- Real-time microphone gain, pitch shifting (deeper voice), bass warmth, compression and a basic noise gate.
-- Routes the processed signal to **VB-CABLE Input**; Discord should use **CABLE Output (VB-Audio Virtual Cable)** as its microphone.
-- One downloadable Inno Setup installer. The installer includes the official VB-CABLE package so the user does not have to find or download a second installer.
+- Mikrofon sesini yükseltme (gain).
+- Sesi kalınlaştırma (pitch shift).
+- Bass / sıcaklık kontrolü.
+- Kompresör ve gürültü azaltma.
+- Gerçek zamanlı, düşük gecikmeli çalışma.
+- Discord'un doğrudan gerçek mikrofon aygıtından işlenmiş sesi alması.
+- Ses işleme yerel bilgisayarda; buluta ses gönderilmez.
+- Kullanıcıya VB-CABLE, VoiceMeeter veya başka bir sanal ses kablosu kurdurmamak.
 
-## Important VB-CABLE notice
+## Mimari
 
-VB-CABLE is a separate product by VB-Audio Software and remains identifiable as **VB-Audio VB-CABLE** in the setup and application. It is donationware. Users can donate or purchase a license at https://shop.vb-audio.com/en/win-apps/11-vb-cable.html. Official origin and licensing information: https://vb-audio.com/Services/licensing.htm. The VB-CABLE package is obtained from the official download page: https://vb-audio.com/Cable/.
+Python tarafı ayrı modüllere bölünecek:
 
-Rynie Voice does not claim ownership of VB-CABLE. Its driver is installed by the official VB-Audio setup program packaged inside the Rynie Voice installer under VB-Audio's published distribution conditions. The user must accept the driver installation/UAC prompt. A Windows restart may be required.
+```text
+eyo2/
+  main.py
+  ui/
+  audio/
+    devices.py
+    engine.py
+    effects.py
+    noise_reduction.py
+  settings/
+    config.py
+  windows/
+    apo_bridge.py
+native/
+  eyo2_apo/
+installer/
+```
 
-## Build
+Python arayüz, ayarlar, aygıt algılama ve DSP kontrolünü üstlenir. Windows mikrofon girişine Discord'dan önce efekt uygulamak için gereken yerel ses bileşeni ayrı bir Windows APO olarak geliştirilecektir. Bu bileşen, VB-CABLE gibi ikinci bir sanal kablo uygulaması değildir; eyo2'nin kendi Windows ses entegrasyonudur.
 
-The GitHub Actions workflow builds a self-contained Windows x64 application, downloads the official VB-CABLE Pack 45 from VB-Audio, and creates one Inno Setup installer.
+## Önemli teknik sınır
 
-## Status
+Sadece Python ses yakalama/oynatma kütüphaneleri, Windows'a yeni mikrofon aygıtı ekleyemez ve Discord'un seçtiği gerçek mikrofonun ses zincirine kendiliğinden müdahale edemez. Bunun için Windows Audio Processing Object (APO) bileşeni gerekir. Microsoft APO'ları Windows ses motorunda çalışan COM DLL bileşenleri olarak tanımlar; gerçek zamanlı işlem arayüzü ve Windows tarafından tanınan kurulum/kayıt yapısı gerekir.
 
-This repository started empty. The initial implementation is being added; the first Windows CI build is the compile check. Hardware/Discord end-to-end testing still needs a real Windows PC and microphone.
+Bu nedenle yalnızca arayüzün açılması veya mikrofonun hoparlöre aktarılması, Discord entegrasyonunun tamamlandığı anlamına gelmez. Discord'a gerçek entegrasyon doğrulanmadan sürüm "hazır" olarak işaretlenmeyecektir.
 
-## Privacy
+## Derleme ve yayın
 
-All audio processing is local. Rynie Voice does not send microphone audio to a server and does not record audio to disk.
+Hedef, Python tarafı ve eyo2'nin kendi Windows ses bileşenini tek bir Windows x64 kurulum dosyasında paketlemektir. Sürücü/DLL imzalama, Windows güvenlik onayları ve gerçek mikrofon/Discord testi tamamlanmadan indirilebilir kurulum yayımlanmış sayılmaz.
+
+## Gizlilik
+
+Mikrofon verisi yerel olarak işlenecek; kayıt dosyası oluşturulmayacak ve ses herhangi bir sunucuya gönderilmeyecektir.
