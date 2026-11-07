@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "fiskheroesrebirth",
+  "version": "${version}",
+  "name": "Super Heroes Rework",
+  "description": "A superhero framework ported to Fabric for Minecraft 26.2.",
+  "authors": [
+    "LafaieteOficial2025",
+    "RynieTR"
+  ],
+  "contact": {
+    "sources": "https://github.com/Rynie067/eya2",
+    "upstream": "https://github.com/LafaieteOficial2025/SuperHeroesRework-00"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.fiskheroesrebirth.mod.FiskHeroesRebirth"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

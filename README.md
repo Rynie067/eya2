@@ -1,52 +1,55 @@
-# eyo2
+# Super Heroes Rework
 
-**eyo2**, Windows'ta mikrofon sesini gerçek zamanlı işlemek için geliştirilen uygulamadır. Görünen uygulama adı eyo2'dir; GitHub deposunun adresi şimdilik `Rynie067/eya2` olarak kalır.
+A Fabric port of the MIT-licensed **SuperHeroesRework-00** project, updated for **Minecraft 26.2**.
 
-## Hedef özellikler
+Original source: https://github.com/LafaieteOficial2025/SuperHeroesRework-00  
+Original author: LafaieteOficial2025  
+License: MIT (the original LICENSE notice is retained).
 
-- Mikrofon sesini yükseltme (gain).
-- Sesi kalınlaştırma (pitch shift).
-- Bass / sıcaklık kontrolü.
-- Kompresör ve gürültü azaltma.
-- Gerçek zamanlı, düşük gecikmeli çalışma.
-- Discord'un doğrudan gerçek mikrofon aygıtından işlenmiş sesi alması.
-- Ses işleme yerel bilgisayarda; buluta ses gönderilmez.
-- Kullanıcıya VB-CABLE, VoiceMeeter veya başka bir sanal ses kablosu kurdurmamak.
+## Environment
 
-## Mimari
+- Minecraft Java Edition 26.2
+- Fabric Loader 0.19.5+
+- Fabric API 0.161.0+26.2
+- Java 25
+- Fabric Loom 1.17
+- Gradle 9.5.1
 
-Python tarafı ayrı modüllere bölünecek:
+## Included foundations
 
-```text
-eyo2/
-  main.py
-  ui/
-  audio/
-    devices.py
-    engine.py
-    effects.py
-    noise_reduction.py
-  settings/
-    config.py
-  windows/
-    apo_bridge.py
-native/
-  eyo2_apo/
-installer/
+- Hero, power, suit, tier and ability-definition JSON data loaders.
+- Hero, ability and animation registries.
+- Player energy and cooldown state utilities.
+- Ability lifecycle hooks (activation, deactivation and tick).
+- Animation state, event and bone-transform data structures.
+- Fabric server tick integration.
+
+## Important project status
+
+The upstream repository is an early framework prototype, not a finished playable superhero mod. The imported repository did **not** contain hero models, textures, sound assets, actual .fsk animation files, a completed animation parser/renderer, multiplayer state synchronization, or concrete gameplay implementations for all JSON ability definitions. Those features are not represented as finished here. The current port makes the existing Java foundation load on Fabric 26.2 and loads the supplied JSON definitions; it does not invent missing assets or claim unfinished abilities already work.
+
+The old Forge 1.20.1 example-template classes and Forge metadata were removed. The mod id remains `fiskheroesrebirth`.
+
+## Build
+
+Install a Java 25 JDK and Gradle 9.5.1, then run:
+
+```bash
+gradle --no-daemon clean build
 ```
 
-Python arayüz, ayarlar, aygıt algılama ve DSP kontrolünü üstlenir. Windows mikrofon girişine Discord'dan önce efekt uygulamak için gereken yerel ses bileşeni ayrı bir Windows APO olarak geliştirilecektir. Bu bileşen, VB-CABLE gibi ikinci bir sanal kablo uygulaması değildir; eyo2'nin kendi Windows ses entegrasyonudur.
+The distributable mod JAR is written to `build/libs/`.
 
-## Önemli teknik sınır
+A GitHub Actions workflow also builds the project on pushes and pull requests and publishes the JAR as a downloadable workflow artifact.
 
-Sadece Python ses yakalama/oynatma kütüphaneleri, Windows'a yeni mikrofon aygıtı ekleyemez ve Discord'un seçtiği gerçek mikrofonun ses zincirine kendiliğinden müdahale edemez. Bunun için Windows Audio Processing Object (APO) bileşeni gerekir. Microsoft APO'ları Windows ses motorunda çalışan COM DLL bileşenleri olarak tanımlar; gerçek zamanlı işlem arayüzü ve Windows tarafından tanınan kurulum/kayıt yapısı gerekir.
+## Data layout
 
-Bu nedenle yalnızca arayüzün açılması veya mikrofonun hoparlöre aktarılması, Discord entegrasyonunun tamamlandığı anlamına gelmez. Discord'a gerçek entegrasyon doğrulanmadan sürüm "hazır" olarak işaretlenmeyecektir.
+Definitions are retained under `src/main/resources/data/fiskheroesrebirth/`:
 
-## Derleme ve yayın
+- `heroes/` and `hero/`
+- `powers/` and `power/`
+- `suits/`
+- `abilities/`
+- `tier/`
 
-Hedef, Python tarafı ve eyo2'nin kendi Windows ses bileşenini tek bir Windows x64 kurulum dosyasında paketlemektir. Sürücü/DLL imzalama, Windows güvenlik onayları ve gerçek mikrofon/Discord testi tamamlanmadan indirilebilir kurulum yayımlanmış sayılmaz.
-
-## Gizlilik
-
-Mikrofon verisi yerel olarak işlenecek; kayıt dosyası oluşturulmayacak ve ses herhangi bir sunucuya gönderilmeyecektir.
+The original MIT license is included in `LICENSE`.
